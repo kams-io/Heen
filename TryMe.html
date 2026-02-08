@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Try Me - For Harleen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .control-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 20;
+            max-width: 300px;
+        }
+
+        .control-panel h2 {
+            color: #f5576c;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .button-group {
+            margin-bottom: 15px;
+        }
+
+        .button-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .control-button {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.9em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(245, 87, 108, 0.4);
+            font-weight: 600;
+            margin: 5px;
+            width: calc(50% - 10px);
+            display: inline-block;
+        }
+
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.6);
+        }
+
+        .control-button.active {
+            background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+        }
+
+        .control-button.cry-button {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        .slider-group {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .slider-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #f5576c;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #f5576c;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .character-image {
+            position: fixed;
+            bottom: 30px;
+            width: 125px;
+            height: auto;
+            z-index: 5;
+            pointer-events: none;
+            transition: all 0.3s ease-out;
+            opacity: 0;
+        }
+
+        .character-image.visible {
+            opacity: 1;
+        }
+
+        .character-image.ekam {
+            left: 50px;
+        }
+
+        .character-image.heen {
+            right: 50px;
+            left: auto;
+            width: 100px;
+        }
+
+        .character-image.ekam-cry {
+            left: 50px;
+        }
+
+        .character-image.heen-cry {
+            right: 50px;
+            left: auto;
+            width: 100px;
+        }
+
+        .character-image.hande {
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 30px;
+            width: 225px;
+        }
+
+        .character-image.handekiss {
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 30px;
+            width: 225px;
+        }
+
+        .character-image.hidden {
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .nav-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 25;
+        }
+
+        .nav-button {
+            background: rgba(255, 255, 255, 0.9);
+            color: #f5576c;
+            border: 2px solid #f5576c;
+            padding: 10px 20px;
+            font-size: 0.9em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            font-weight: 600;
+        }
+
+        .nav-button:hover {
+            background: #f5576c;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .slow-heart {
+            position: fixed;
+            font-size: 1.5em;
+            color: rgba(255, 107, 157, 0.3);
+            pointer-events: none;
+            z-index: 2;
+            animation: slowFall linear;
+        }
+
+        @keyframes slowFall {
+            0% {
+                transform: translateY(-100px) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(100vh) translateX(30px) rotate(180deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="backgroundMusic" autoplay loop>
+        <source src="sonican-lo-fi-music-loop-sentimental-jazzy-love-473154.mp3" type="audio/mpeg">
+    </audio>
+    <div class="nav-buttons">
+        <button class="nav-button" onclick="window.location.href='index.html'">Start Again</button>
+    </div>
+
+    <div class="control-panel">
+        <h2>Controls</h2>
+        
+        <div class="button-group">
+            <label>Launch Characters:</label>
+            <button class="control-button" id="launchEkam">Launch Ekam</button>
+            <button class="control-button" id="launchHeen">Launch Heen</button>
+        </div>
+
+        <div class="button-group">
+            <label>Together Mode:</label>
+            <button class="control-button" id="handeMode">Side Hug</button>
+            <button class="control-button" id="handekissMode">Kiss</button>
+        </div>
+
+        <button class="control-button cry-button" id="makeCryButton">Make Them Cry</button>
+    </div>
+
+    <!-- Character Images -->
+    <img src="ekam.png" alt="Ekam" class="character-image ekam" id="ekamImage">
+    <img src="heen.png" alt="Heen" class="character-image heen" id="heenImage">
+    <img src="ekamcry.png" alt="Ekam Crying" class="character-image ekam-cry hidden" id="ekamCryImage">
+    <img src="heencry.png" alt="Heen Crying" class="character-image heen-cry hidden" id="heenCryImage">
+    <img src="hande.png" alt="Together" class="character-image hande hidden" id="handeImage">
+    <img src="handekiss.png" alt="Together Kiss" class="character-image handekiss hidden" id="handekissImage">
+
+    <script>
+        const ekamImage = document.getElementById('ekamImage');
+        const heenImage = document.getElementById('heenImage');
+        const ekamCryImage = document.getElementById('ekamCryImage');
+        const heenCryImage = document.getElementById('heenCryImage');
+        const handeImage = document.getElementById('handeImage');
+        const handekissImage = document.getElementById('handekissImage');
+
+        const launchEkamBtn = document.getElementById('launchEkam');
+        const launchHeenBtn = document.getElementById('launchHeen');
+        const handeModeBtn = document.getElementById('handeMode');
+        const handekissModeBtn = document.getElementById('handekissMode');
+        const makeCryBtn = document.getElementById('makeCryButton');
+
+        let ekamLaunched = false;
+        let heenLaunched = false;
+        let isCrying = false;
+        let togetherMode = 'hande'; // 'hande' or 'handekiss'
+        let cryTogetherMode = 'hande'; // 'hande' or 'handekiss'
+
+        const startLeft = 50;
+        const startRight = 50;
+        // Initialize mouse position far from center so images start far apart
+        let currentMouseX = window.innerWidth;
+        let currentMouseY = window.innerHeight;
+        let rafId = null;
+        let isAnimating = false;
+
+        function getDistance(x1, y1, x2, y2) {
+            return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        }
+
+        function getResponsiveArea() {
+            const responsiveWidth = window.innerWidth * 0.75;
+            const responsiveHeight = window.innerHeight * 0.75;
+            const responsiveLeft = (window.innerWidth - responsiveWidth) / 2;
+            const responsiveTop = (window.innerHeight - responsiveHeight) / 2;
+            
+            return {
+                left: responsiveLeft,
+                top: responsiveTop,
+                width: responsiveWidth,
+                height: responsiveHeight,
+                centerX: responsiveLeft + responsiveWidth / 2,
+                centerY: responsiveTop + responsiveHeight / 2,
+                maxDistance: Math.sqrt(Math.pow(responsiveWidth / 2, 2) + Math.pow(responsiveHeight / 2, 2))
+            };
+        }
+
+        function updateImagePositions() {
+            if (!ekamLaunched && !heenLaunched) {
+                if (isAnimating) {
+                    rafId = requestAnimationFrame(updateImagePositions);
+                } else {
+                    rafId = null;
+                }
+                return;
+            }
+
+            const responsiveArea = getResponsiveArea();
+            const distance = getDistance(currentMouseX, currentMouseY, responsiveArea.centerX, responsiveArea.centerY);
+            const clampedDistance = Math.min(distance, responsiveArea.maxDistance);
+            const rawProximity = clampedDistance / responsiveArea.maxDistance;
+            const proximity = Math.pow(rawProximity, 0.85);
+
+            // Check if they're close enough to show together image
+            const closeness = 1 - proximity;
+            const threshold = 0.3; // When closeness > 0.3, show together
+
+            if (ekamLaunched && heenLaunched && closeness > threshold) {
+                // Show together image
+                if (isCrying) {
+                    ekamImage.classList.add('hidden');
+                    heenImage.classList.add('hidden');
+                    ekamCryImage.classList.add('hidden');
+                    heenCryImage.classList.add('hidden');
+                    handeImage.classList.add('hidden');
+                    handekissImage.classList.add('hidden');
+                    
+                    if (cryTogetherMode === 'hande') {
+                        handeImage.classList.remove('hidden');
+                        handeImage.classList.add('visible');
+                    } else {
+                        handekissImage.classList.remove('hidden');
+                        handekissImage.classList.add('visible');
+                    }
+                } else {
+                    ekamImage.classList.add('hidden');
+                    ekamImage.classList.remove('visible');
+                    heenImage.classList.add('hidden');
+                    heenImage.classList.remove('visible');
+                    ekamCryImage.classList.add('hidden');
+                    ekamCryImage.classList.remove('visible');
+                    heenCryImage.classList.add('hidden');
+                    heenCryImage.classList.remove('visible');
+                    handekissImage.classList.add('hidden');
+                    handekissImage.classList.remove('visible');
+                    handeImage.classList.remove('hidden');
+                    handeImage.classList.add('visible');
+                    
+                    if (togetherMode === 'handekiss') {
+                        handeImage.classList.add('hidden');
+                        handeImage.classList.remove('visible');
+                        handekissImage.classList.remove('hidden');
+                        handekissImage.classList.add('visible');
+                    }
+                }
+            } else {
+                // Show individual images
+                if (isCrying) {
+                    ekamImage.classList.add('hidden');
+                    heenImage.classList.add('hidden');
+                    handeImage.classList.add('hidden');
+                    handekissImage.classList.add('hidden');
+                    
+                    if (ekamLaunched) {
+                        ekamCryImage.classList.remove('hidden');
+                        ekamCryImage.classList.add('visible');
+                        const ekamImageWidth = 125;
+                        const ekamStartX = startLeft;
+                        const centerX = window.innerWidth / 2;
+                        const ekamCenterOffset = ekamImageWidth / 2;
+                        const ekamTargetX = ekamStartX + (centerX - ekamStartX - ekamCenterOffset) * closeness;
+                        ekamCryImage.style.left = ekamTargetX + 'px';
+                    } else {
+                        ekamCryImage.classList.add('hidden');
+                        ekamCryImage.classList.remove('visible');
+                    }
+                    
+                    if (heenLaunched) {
+                        heenCryImage.classList.remove('hidden');
+                        heenCryImage.classList.add('visible');
+                        const heenImageWidth = 100;
+                        const heenStartX = window.innerWidth - startRight - heenImageWidth;
+                        const centerX = window.innerWidth / 2;
+                        const heenCenterOffset = heenImageWidth / 2;
+                        const heenTargetX = heenStartX - (heenStartX - centerX + heenCenterOffset) * closeness;
+                        heenCryImage.style.right = (window.innerWidth - heenTargetX - heenImageWidth) + 'px';
+                    } else {
+                        heenCryImage.classList.add('hidden');
+                        heenCryImage.classList.remove('visible');
+                    }
+                } else {
+                    ekamCryImage.classList.add('hidden');
+                    heenCryImage.classList.add('hidden');
+                    handeImage.classList.add('hidden');
+                    handekissImage.classList.add('hidden');
+                    
+                    if (ekamLaunched) {
+                        ekamImage.classList.remove('hidden');
+                        ekamImage.classList.add('visible');
+                        const ekamImageWidth = 125;
+                        const ekamStartX = startLeft;
+                        const centerX = window.innerWidth / 2;
+                        const ekamCenterOffset = ekamImageWidth / 2;
+                        const ekamTargetX = ekamStartX + (centerX - ekamStartX - ekamCenterOffset) * closeness;
+                        ekamImage.style.left = ekamTargetX + 'px';
+                    } else {
+                        ekamImage.classList.add('hidden');
+                        ekamImage.classList.remove('visible');
+                    }
+                    
+                    if (heenLaunched) {
+                        heenImage.classList.remove('hidden');
+                        heenImage.classList.add('visible');
+                        const heenImageWidth = 100;
+                        const heenStartX = window.innerWidth - startRight - heenImageWidth;
+                        const centerX = window.innerWidth / 2;
+                        const heenCenterOffset = heenImageWidth / 2;
+                        const heenTargetX = heenStartX - (heenStartX - centerX + heenCenterOffset) * closeness;
+                        heenImage.style.right = (window.innerWidth - heenTargetX - heenImageWidth) + 'px';
+                    } else {
+                        heenImage.classList.add('hidden');
+                        heenImage.classList.remove('visible');
+                    }
+                }
+            }
+
+            if (isAnimating) {
+                rafId = requestAnimationFrame(updateImagePositions);
+            } else {
+                rafId = null;
+            }
+        }
+
+        // Launch buttons
+        launchEkamBtn.addEventListener('click', () => {
+            ekamLaunched = !ekamLaunched;
+            launchEkamBtn.textContent = ekamLaunched ? 'Hide Ekam' : 'Launch Ekam';
+            launchEkamBtn.classList.toggle('active', ekamLaunched);
+            if (ekamLaunched) {
+                // Set initial position
+                ekamImage.style.left = startLeft + 'px';
+                ekamCryImage.style.left = startLeft + 'px';
+                ekamImage.classList.remove('hidden');
+                ekamImage.classList.add('visible');
+                ekamCryImage.classList.remove('hidden');
+                ekamCryImage.classList.add('visible');
+            } else {
+                ekamImage.classList.add('hidden');
+                ekamImage.classList.remove('visible');
+                ekamCryImage.classList.add('hidden');
+                ekamCryImage.classList.remove('visible');
+            }
+            updateImagePositions();
+        });
+
+        launchHeenBtn.addEventListener('click', () => {
+            heenLaunched = !heenLaunched;
+            launchHeenBtn.textContent = heenLaunched ? 'Hide Heen' : 'Launch Heen';
+            launchHeenBtn.classList.toggle('active', heenLaunched);
+            if (heenLaunched) {
+                // Set initial position
+                const heenImageWidth = 100;
+                const heenStartX = window.innerWidth - startRight - heenImageWidth;
+                heenImage.style.right = (window.innerWidth - heenStartX - heenImageWidth) + 'px';
+                heenCryImage.style.right = (window.innerWidth - heenStartX - heenImageWidth) + 'px';
+                heenImage.classList.remove('hidden');
+                heenImage.classList.add('visible');
+                heenCryImage.classList.remove('hidden');
+                heenCryImage.classList.add('visible');
+            } else {
+                heenImage.classList.add('hidden');
+                heenImage.classList.remove('visible');
+                heenCryImage.classList.add('hidden');
+                heenCryImage.classList.remove('visible');
+            }
+            updateImagePositions();
+        });
+
+        // Together mode buttons
+        handeModeBtn.addEventListener('click', () => {
+            if (isCrying) {
+                cryTogetherMode = 'hande';
+            } else {
+                togetherMode = 'hande';
+            }
+            handeModeBtn.classList.add('active');
+            handekissModeBtn.classList.remove('active');
+            updateImagePositions();
+        });
+
+        handekissModeBtn.addEventListener('click', () => {
+            if (isCrying) {
+                cryTogetherMode = 'handekiss';
+            } else {
+                togetherMode = 'handekiss';
+            }
+            handekissModeBtn.classList.add('active');
+            handeModeBtn.classList.remove('active');
+            updateImagePositions();
+        });
+
+        // Make them cry button
+        makeCryBtn.addEventListener('click', () => {
+            isCrying = !isCrying;
+            makeCryBtn.textContent = isCrying ? 'Stop Crying' : 'Make Them Cry';
+            makeCryBtn.classList.toggle('active', isCrying);
+            // Sync cryTogetherMode with togetherMode when switching to crying
+            if (isCrying) {
+                cryTogetherMode = togetherMode;
+            }
+            updateImagePositions();
+        });
+
+        // Mouse tracking
+        document.addEventListener('mousemove', (e) => {
+            currentMouseX = e.clientX;
+            currentMouseY = e.clientY;
+            
+            if (!isAnimating) {
+                isAnimating = true;
+                if (!rafId) {
+                    rafId = requestAnimationFrame(updateImagePositions);
+                }
+            }
+        });
+
+        document.addEventListener('mouseleave', () => {
+            isAnimating = false;
+        });
+
+        // Initialize positions to be far apart
+        function initializeImagePositions() {
+            const ekamImageWidth = 125;
+            const heenImageWidth = 100;
+            const ekamStartX = startLeft;
+            const heenStartX = window.innerWidth - startRight - heenImageWidth;
+            
+            ekamImage.style.left = ekamStartX + 'px';
+            ekamCryImage.style.left = ekamStartX + 'px';
+            heenImage.style.right = (window.innerWidth - heenStartX - heenImageWidth) + 'px';
+            heenCryImage.style.right = (window.innerWidth - heenStartX - heenImageWidth) + 'px';
+        }
+
+        // Initialize
+        handeModeBtn.classList.add('active');
+        initializeImagePositions();
+        updateImagePositions();
+
+        // Create slow motion falling hearts
+        function createSlowHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'slow-heart';
+            heart.textContent = '💖';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = (Math.random() * 15 + 20) + 's'; // 20-35 seconds (slow motion)
+            heart.style.animationDelay = Math.random() * 2 + 's';
+            heart.style.fontSize = (Math.random() * 1 + 1) + 'em';
+            document.body.appendChild(heart);
+
+            // Remove heart after animation
+            setTimeout(() => {
+                heart.remove();
+            }, 40000);
+        }
+
+        // Create slow hearts periodically
+        setInterval(createSlowHeart, 3000);
+
+        // Create initial batch
+        for (let i = 0; i < 3; i++) {
+            setTimeout(createSlowHeart, i * 1000);
+        }
+
+        // Function to close the tab
+        function closeTab() {
+            // Try multiple methods to close the tab
+            if (window.opener) {
+                window.close();
+            } else {
+                // For tabs opened directly, try to close
+                window.open('', '_self').close();
+                // If that doesn't work, try regular close
+                setTimeout(() => {
+                    window.close();
+                }, 100);
+            }
+        }
+
+        // Audio playback with seamless cross-page continuation
+        const audio = document.getElementById('backgroundMusic');
+        
+        if (audio) {
+            audio.volume = 0.5; // Set volume to 50%
+            
+            // Resume from stored time if available
+            const storedTime = sessionStorage.getItem('audioTime');
+            if (storedTime) {
+                audio.currentTime = parseFloat(storedTime);
+            }
+            
+            // Save current time periodically
+            setInterval(() => {
+                if (!audio.paused) {
+                    sessionStorage.setItem('audioTime', audio.currentTime.toString());
+                }
+            }, 500);
+            
+            // Save time before page unload
+            window.addEventListener('beforeunload', () => {
+                sessionStorage.setItem('audioTime', audio.currentTime.toString());
+            });
+            
+            // Save time on navigation
+            document.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A' || e.target.closest('button[onclick*="location"]')) {
+                    sessionStorage.setItem('audioTime', audio.currentTime.toString());
+                }
+            });
+            
+            audio.play().catch(e => {
+                // Autoplay was prevented, start on user interaction
+                document.addEventListener('click', () => {
+                    audio.play().catch(() => {});
+                }, { once: true });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Page - For Harleen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px 20px 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .floating-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .character-image {
+            position: fixed;
+            bottom: 30px;
+            width: 125px;
+            height: auto;
+            z-index: 5;
+            pointer-events: none;
+            transition: transform 0.15s ease-out, opacity 0.2s ease-out;
+            opacity: 1;
+            will-change: transform;
+        }
+
+        .character-image.ekam {
+            left: 50px;
+        }
+
+        .character-image.heen {
+            right: 50px;
+            left: auto;
+            width: 100px;
+        }
+
+        .character-image.hande {
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 30px;
+            width: 225px;
+        }
+
+        .character-image.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 2em;
+            color: rgba(255, 107, 157, 0.6);
+            animation: floatUp linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) translateX(50px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 25px 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #f5576c;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            color: #333;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-weight: 300;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-size: 1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+        }
+
+        .emoji {
+            font-size: 2.5em;
+            margin: 15px 0;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+                max-width: 90%;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .message {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="backgroundMusic" autoplay loop>
+        <source src="sonican-lo-fi-music-loop-sentimental-jazzy-love-473154.mp3" type="audio/mpeg">
+    </audio>
+    <div class="floating-background" id="floatingBackground"></div>
+    <img src="ekam.png" alt="Ekam" class="character-image ekam" id="ekamImage">
+    <img src="heen.png" alt="Heen" class="character-image heen" id="heenImage">
+    <img src="hande.png" alt="Together" class="character-image hande hidden" id="handeImage">
+    <div class="container">
+        <div class="emoji">🎉</div>
+        <h1>HeenMean is the Best!</h1>
+        <div class="message">
+            Thank you for existing baby. But there is one question I need to ask you!
+        </div>
+        <button class="button" id="goBackButton" onclick="window.location.href='question.html'">
+            See Question
+        </button>
+    </div>
+
+    <script>
+        const heartEmoji = '💖';
+
+        const floatingBackground = document.getElementById('floatingBackground');
+
+        // Create floating hearts
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.textContent = heartEmoji;
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            heart.style.animationDelay = Math.random() * 2 + 's';
+            heart.style.fontSize = (Math.random() * 1.5 + 1.5) + 'em';
+            floatingBackground.appendChild(heart);
+
+            // Remove heart after animation
+            setTimeout(() => {
+                heart.remove();
+            }, 25000);
+        }
+
+        // Create hearts periodically
+        setInterval(createFloatingHeart, 1500);
+
+        // Create initial batch
+        for (let i = 0; i < 5; i++) {
+            setTimeout(createFloatingHeart, i * 300);
+        }
+
+        // Interactive image behavior based on cursor proximity to button
+        const button = document.getElementById('goBackButton');
+        const ekamImage = document.getElementById('ekamImage');
+        const heenImage = document.getElementById('heenImage');
+        const handeImage = document.getElementById('handeImage');
+        
+        const startLeft = 50; // Starting left position for ekam
+        const startRight = 50; // Starting right position for heen
+        
+        let rafId = null;
+        // Initialize mouse position far from center so images start far apart
+        let currentMouseX = window.innerWidth;
+        let currentMouseY = window.innerHeight;
+        let isAnimating = false;
+        
+        // Set initial positions to be far apart
+        function initializeImagePositions() {
+            const ekamImageWidth = 125;
+            const heenImageWidth = 100;
+            const ekamStartX = startLeft;
+            const heenStartX = window.innerWidth - startRight - heenImageWidth;
+            
+            ekamImage.style.left = ekamStartX + 'px';
+            heenImage.style.right = (window.innerWidth - heenStartX - heenImageWidth) + 'px';
+        }
+        
+        function getDistance(x1, y1, x2, y2) {
+            return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        }
+        
+        function isMouseOverButton(mouseX, mouseY) {
+            const rect = button.getBoundingClientRect();
+            return mouseX >= rect.left && 
+                   mouseX <= rect.right && 
+                   mouseY >= rect.top && 
+                   mouseY <= rect.bottom;
+        }
+        
+        function getResponsiveArea() {
+            // Define responsive area as 3/4 of the page
+            const responsiveWidth = window.innerWidth * 0.75;
+            const responsiveHeight = window.innerHeight * 0.75;
+            const responsiveLeft = (window.innerWidth - responsiveWidth) / 2;
+            const responsiveTop = (window.innerHeight - responsiveHeight) / 2;
+            
+            return {
+                left: responsiveLeft,
+                top: responsiveTop,
+                width: responsiveWidth,
+                height: responsiveHeight,
+                centerX: responsiveLeft + responsiveWidth / 2,
+                centerY: responsiveTop + responsiveHeight / 2,
+                maxDistance: Math.sqrt(Math.pow(responsiveWidth / 2, 2) + Math.pow(responsiveHeight / 2, 2))
+            };
+        }
+        
+        function updateImagePositions() {
+            const mouseX = currentMouseX;
+            const mouseY = currentMouseY;
+            const isOverButton = isMouseOverButton(mouseX, mouseY);
+            const responsiveArea = getResponsiveArea();
+            
+            // Calculate distance from center of responsive area
+            const distance = getDistance(mouseX, mouseY, responsiveArea.centerX, responsiveArea.centerY);
+            
+            // Clamp distance to maxDistance of responsive area
+            const clampedDistance = Math.min(distance, responsiveArea.maxDistance);
+            
+            // Calculate proximity with smooth curve (0 = at center, 1 = at edge)
+            // Using a smoother curve for better responsiveness
+            const rawProximity = clampedDistance / responsiveArea.maxDistance;
+            const proximity = Math.pow(rawProximity, 0.85); // Slight curve for smoother feel
+            
+            if (isOverButton) {
+                // Cursor is on button - show hande image, hide individual images
+                ekamImage.classList.add('hidden');
+                heenImage.classList.add('hidden');
+                handeImage.classList.remove('hidden');
+            } else {
+                // Cursor is away - show individual images, hide hande
+                ekamImage.classList.remove('hidden');
+                heenImage.classList.remove('hidden');
+                handeImage.classList.add('hidden');
+                
+                // Calculate positions based on proximity
+                // When proximity = 1 (at edge), images are at start positions (farthest apart)
+                // When proximity = 0 (at center), images move toward center (closest together)
+                const ekamImageWidth = 125;
+                const heenImageWidth = 100;
+                const ekamStartX = startLeft;
+                const heenStartX = window.innerWidth - startRight - heenImageWidth;
+                const centerX = window.innerWidth / 2;
+                const ekamCenterOffset = ekamImageWidth / 2;
+                const heenCenterOffset = heenImageWidth / 2;
+                
+                // Calculate target positions
+                // (1 - proximity) gives closeness: 1 = at center, 0 = at edge
+                const closeness = 1 - proximity;
+                const ekamTargetX = ekamStartX + (centerX - ekamStartX - ekamCenterOffset) * closeness;
+                const heenTargetX = heenStartX - (heenStartX - centerX + heenCenterOffset) * closeness;
+                
+                ekamImage.style.left = ekamTargetX + 'px';
+                heenImage.style.right = (window.innerWidth - heenTargetX - heenImageWidth) + 'px';
+            }
+            
+            // Continue animation if mouse is moving
+            if (isAnimating) {
+                rafId = requestAnimationFrame(updateImagePositions);
+            } else {
+                rafId = null;
+            }
+        }
+        
+        // Track mouse movement with requestAnimationFrame for smooth updates
+        document.addEventListener('mousemove', (e) => {
+            currentMouseX = e.clientX;
+            currentMouseY = e.clientY;
+            
+            if (!isAnimating) {
+                isAnimating = true;
+                if (!rafId) {
+                    rafId = requestAnimationFrame(updateImagePositions);
+                }
+            }
+        });
+        
+        // Stop animation when mouse leaves window
+        document.addEventListener('mouseleave', () => {
+            isAnimating = false;
+        });
+        
+        // Initialize positions to be far apart
+        initializeImagePositions();
+        // Then update based on cursor position
+        updateImagePositions();
+
+        // Audio playback with seamless cross-page continuation
+        const audio = document.getElementById('backgroundMusic');
+        
+        if (audio) {
+            audio.volume = 0.5; // Set volume to 50%
+            
+            // Resume from stored time if available
+            const storedTime = sessionStorage.getItem('audioTime');
+            if (storedTime) {
+                audio.currentTime = parseFloat(storedTime);
+            }
+            
+            // Save current time periodically
+            setInterval(() => {
+                if (!audio.paused) {
+                    sessionStorage.setItem('audioTime', audio.currentTime.toString());
+                }
+            }, 500);
+            
+            // Save time before page unload
+            window.addEventListener('beforeunload', () => {
+                sessionStorage.setItem('audioTime', audio.currentTime.toString());
+            });
+            
+            // Save time on navigation
+            document.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A' || e.target.closest('button[onclick*="location"]')) {
+                    sessionStorage.setItem('audioTime', audio.currentTime.toString());
+                }
+            });
+            
+            audio.play().catch(e => {
+                // Autoplay was prevented, start on user interaction
+                document.addEventListener('click', () => {
+                    audio.play().catch(() => {});
+                }, { once: true });
+            });
+        }
+    </script>
+</body>
+</html>
